@@ -19,7 +19,8 @@ def calculate_similarity(vectorizer, text1, text2):
 
 # Function for product name matching
 def product_name_matching(vectorizer, amazon, flipkart):
-    product_name_matrix = cosine_similarity(vectorizer.fit_transform(amazon['product_name'].fillna('')), vectorizer.transform(flipkart['product_name'].fillna('')))
+    product_name_matrix = cosine_similarity(vectorizer.fit_transform(amazon['product_name'].fillna('')),
+                                            vectorizer.transform(flipkart['product_name'].fillna('')))
     matching_indices = (product_name_matrix > 0.5).nonzero()
     return matching_indices, product_name_matrix
 
@@ -36,7 +37,8 @@ def brand_matching(vectorizer, amazon, flipkart, matching_product_name_indices):
 def color_matching(vectorizer, amazon, flipkart, matched_brands):
     matched_colors = []
     for amazon_index, flipkart_index, brand_similarity in matched_brands:
-        color_similarity = calculate_similarity(vectorizer, str(amazon.iloc[amazon_index]['Colour']), str(flipkart.iloc[flipkart_index]['Color']))
+        color_similarity = calculate_similarity(vectorizer, str(amazon.iloc[amazon_index]['Colour']),
+                                                str(flipkart.iloc[flipkart_index]['Color']))
         if color_similarity > 0.5:
             matched_colors.append((amazon_index, flipkart_index, brand_similarity, color_similarity))
     return matched_colors
@@ -53,7 +55,8 @@ def capacity_matching(amazon, flipkart, matched_colors):
 def model_matching(vectorizer, amazon, flipkart, matched_capacities):
     matched_models = []
     for amazon_index, flipkart_index, brand_similarity, color_similarity in matched_capacities:
-        model_similarity = calculate_similarity(vectorizer, amazon.iloc[amazon_index]['Model'], flipkart.iloc[flipkart_index]['Model Name'])
+        model_similarity = calculate_similarity(vectorizer, amazon.iloc[amazon_index]['Model'],
+                                                flipkart.iloc[flipkart_index]['Model Name'])
         if model_similarity > 0.7:
             matched_models.append((amazon_index, flipkart_index, brand_similarity, color_similarity, model_similarity))
     return matched_models
